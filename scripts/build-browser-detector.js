@@ -18,7 +18,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 const CORE_PATH = path.join(ROOT, 'source/skills/critique/scripts/detect-antipatterns-core.mjs');
 const WRAPPER_PATH = path.join(ROOT, 'source/skills/critique/scripts/detect-antipatterns-browser-wrapper.js');
-const OUTPUT_PATH = path.join(ROOT, 'public/js/detect-antipatterns-browser.js');
+const OUTPUT_PATH = path.join(ROOT, '.claude/skills/critique/scripts/detect-antipatterns-browser.js');
 
 // Read and strip exports from core
 let core = fs.readFileSync(CORE_PATH, 'utf-8');

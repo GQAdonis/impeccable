@@ -38,8 +38,8 @@ describeIf('browser script parity with CLI', () => {
         let filePath;
         if (req.url.startsWith('/fixtures/')) {
           filePath = path.join(${JSON.stringify(path.join(import.meta.dir))}, req.url);
-        } else if (req.url.startsWith('/js/')) {
-          filePath = path.join(${JSON.stringify(path.join(import.meta.dir, '..', 'public'))}, req.url);
+        } else if (req.url.startsWith('/.claude/')) {
+          filePath = path.join(${JSON.stringify(path.join(import.meta.dir, '..'))}, req.url);
         } else {
           res.writeHead(404); res.end(); return;
         }

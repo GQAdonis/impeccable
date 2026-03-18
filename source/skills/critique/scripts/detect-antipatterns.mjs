@@ -480,9 +480,10 @@ async function detectUrl(url) {
   }
 
   // Read the browser detection script — reuse it instead of reimplementing
+  // The generated browser script lives alongside this file after build
   const browserScriptPath = path.resolve(
     path.dirname(new URL(import.meta.url).pathname),
-    '..', '..', '..', '..', 'public', 'js', 'detect-antipatterns-browser.js'
+    'detect-antipatterns-browser.js'
   );
   let browserScript;
   try {

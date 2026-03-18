@@ -19,6 +19,19 @@ const server = serve({
     "/cheatsheet": cheatsheet,
     "/gallery": gallery,
 
+    // Built skill scripts (.claude/skills/)
+    "/.claude/skills/*": async (req) => {
+      const url = new URL(req.url);
+      if (url.pathname.includes('..')) return new Response("Bad Request", { status: 400 });
+      const filePath = `.${url.pathname}`;
+      const assetFile = file(filePath);
+      if (await assetFile.exists()) {
+        return new Response(assetFile, {
+          headers: { "Content-Type": "application/javascript", "X-Content-Type-Options": "nosniff" }
+        });
+      }
+      return new Response("Not Found", { status: 404 });
+    },
     // Static assets - all public subdirectories
     "/assets/*": async (req) => {
       const url = new URL(req.url);
