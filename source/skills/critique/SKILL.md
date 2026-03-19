@@ -22,7 +22,8 @@ Before the manual critique, run the bundled deterministic detector. It catches 2
 node scripts/detect-antipatterns.mjs --json [--fast] [target]
 ```
 
-- Pass files, directories, or URLs as `[target]`
+- Pass files or directories as `[target]`
+- For URLs, skip the CLI scan (it requires Puppeteer installation). Instead, rely on browser visualization (below) and LLM analysis.
 - For large directories (200+ scannable files), use `--fast` (regex-only, skips jsdom)
 - For 500+ files, narrow scope to the most relevant subdirectory or ask the user
 - Exit code 0 = clean, 2 = findings
