@@ -27,7 +27,9 @@
     "deploy": "bun run build && wrangler pages deploy build/",
     "test": "bun test",
     "screenshot": "bun run scripts/screenshot-antipatterns.js",
-    "og-image": "bun run scripts/generate-og-image.js"
+    "og-image": "bun run scripts/generate-og-image.js",
+    "install-local": "bun run scripts/install-local.js",
+    "uninstall-local": "bun run scripts/uninstall-local.js"
   },
   "type": "module",
   "devDependencies": {
