@@ -56,7 +56,13 @@ export function readManifest() {
     const content = fs.readFileSync(MANIFEST_PATH, 'utf8');
     return JSON.parse(content);
   } catch (error) {
-    console.error(`Failed to read manifest: ${error.message}`);
+    if (error instanceof SyntaxError) {
+      console.error(`Manifest file is corrupted (invalid JSON): ${error.message}`);
+      console.error(`Location: ${MANIFEST_PATH}`);
+      console.error(`Fix: Delete the file and reinstall: rm "${MANIFEST_PATH}" && bun run install-local`);
+    } else {
+      console.error(`Failed to read manifest: ${error.message}`);
+    }
     return null;
   }
 }
@@ -608,7 +614,7 @@ function uninstallProvider(providerName, manifest) {
   const impeccableSkills = providerData.skills || [];
   let removedCount = 0;
 
-  // Remove individual skill symlinks
+  // Remove individual skill symlinks (tracked in manifest as impeccable)
   for (const skill of impeccableSkills) {
     const linkPath = path.join(centralProviderDir, skill);
 
@@ -616,20 +622,15 @@ function uninstallProvider(providerName, manifest) {
       const stats = fs.lstatSync(linkPath);
 
       if (stats.isSymbolicLink()) {
-        const target = fs.readlinkSync(linkPath);
-
-        // Only remove if it points to impeccable
-        if (target.includes('impeccable')) {
-          try {
-            fs.unlinkSync(linkPath);
-            console.log(`   ✓ Removed ${skill}`);
-            removedCount++;
-          } catch (error) {
-            console.error(`   ❌ Failed to remove ${skill}: ${error.message}`);
-          }
-        } else {
-          console.log(`   ⏭  Keeping ${skill} (not from impeccable)`);
+        try {
+          fs.unlinkSync(linkPath);
+          console.log(`   ✓ Removed ${skill}`);
+          removedCount++;
+        } catch (error) {
+          console.error(`   ❌ Failed to remove ${skill}: ${error.message}`);
         }
+      } else {
+        console.warn(`   ⚠️  ${skill} is not a symlink, skipping`);
       }
     }
   }
