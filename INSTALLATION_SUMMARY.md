@@ -4,51 +4,64 @@
 
 Your local development environment has been successfully configured with symbolic links to this repository.
 
-## What Was Installed
+## What was installed
 
-**21 skills** installed across **10 AI tool providers**:
+**Centralized Location:** `~/.TOOLS/skills/`
 
-- **Claude Code** (`~/.claude/skills/`)
-- **Cursor** (`~/.cursor/skills/`)
-- **Gemini CLI** (`~/.gemini/skills/`)
-- **Codex CLI** (`~/.codex/skills/`)
-- **VS Code Copilot / Antigravity** (`~/.agents/skills/`)
-- **Kiro** (`~/.kiro/skills/`)
-- **OpenCode** (`~/.opencode/skills/`)
-- **Pi** (`~/.pi/skills/`)
-- **Trae International** (`~/.trae/skills/`)
-- **Trae China** (`~/.trae-cn/skills/`)
+This installation creates a centralized directory structure where all AI tool skills are managed from a single location. Both impeccable skills and third-party skills can coexist in the same directory.
 
-## How It Works
+**Architecture:**
+- Skills are built to local `./{provider}/skills/` directories
+- Individual skills symlink to `~/.TOOLS/skills/{provider}/`
+- Legacy paths (`~/.claude/skills/`) symlink to centralized directories
 
-All global skills now point to this local repository:
+**Total:** 21 skills across 10 AI tool providers
 
-```
-~/.claude/skills/polish → /Users/gqadonis/Projects/references/impeccable/.claude/skills/polish
-```
+## How symlinks work
 
-This means:
-- ✅ Changes to this repo are **immediately available** in all tools
-- ✅ `git pull` updates propagate **instantly** everywhere
-- ✅ Local edits can be tested **in real-time**
+**Two-level symlink architecture:**
 
-## Quick Commands
+1. **Individual skill symlinks:**
+   ```
+   ~/.TOOLS/skills/claude/polish/ → ./impeccable/.claude/skills/polish/
+   ```
+
+2. **Provider-level symlinks:**
+   ```
+   ~/.claude/skills/ → ~/.TOOLS/skills/claude/
+   ```
+
+**Example resolution:**
+- Claude Code reads: `~/.claude/skills/polish/skill.md`
+- Resolves to: `~/.TOOLS/skills/claude/polish/skill.md`
+- Resolves to: `./impeccable/.claude/skills/polish/skill.md`
+
+This indirection is transparent to AI tools - they see a normal directory structure.
+
+## Essential Commands
 
 ```bash
+# Validate installation health
+bun run validate-local
+
 # Rebuild after source changes
 bun run build
 
-# Reinstall symlinks
-bun run install-local
+# Get upstream updates
+git pull && bun run build
 
-# Install specific providers only
-bun run install-local -- --providers=claude,cursor
+# Add custom skills
+ln -s /path/to/my-skill ~/.TOOLS/skills/claude/my-skill
 
-# Remove symlinks
+# List all skills
+ls -la ~/.TOOLS/skills/claude/
+
+# Check symlink targets
+readlink ~/.claude/skills                    # Provider-level
+readlink ~/.TOOLS/skills/claude/polish       # Skill-level
+
+# Uninstall
 bun run uninstall-local
-
-# Clean build artifacts
-bun run clean
 ```
 
 ## Development Workflow
@@ -75,7 +88,46 @@ ls -la ~/.claude/skills/
 
 # Check a specific skill
 readlink ~/.claude/skills/polish
-# Should show: /Users/gqadonis/Projects/references/impeccable/.claude/skills/polish
+# Should show: ~/.TOOLS/skills/claude/polish
+```
+
+## Troubleshooting
+
+**Installation validation fails:**
+```bash
+# Check specific issues
+bun run validate-local
+
+# Fix broken symlinks
+bun run build && bun run install-local
+
+# Fix stale builds
+bun run build
+```
+
+**Skills not visible in AI tool:**
+```bash
+# Verify symlink structure
+readlink ~/.claude/skills
+ls -la ~/.TOOLS/skills/claude/
+
+# Restart AI tool or reload configuration
+```
+
+**Restore from backup:**
+```bash
+# Find backup
+ls ~/.claude/ | grep backup
+
+# Restore specific skill
+mv ~/.claude/skills.backup-*/my-skill ~/.TOOLS/skills/claude/
+```
+
+**Complete reinstall:**
+```bash
+bun run uninstall-local
+bun run install-local
+bun run validate-local
 ```
 
 ## Available Scripts
@@ -90,28 +142,6 @@ Added to `package.json`:
 - **[LOCAL_DEVELOPMENT.md](./LOCAL_DEVELOPMENT.md)** - Complete development guide
 - **[CLAUDE.md](./CLAUDE.md)** - Project instructions for Claude
 - **[README.md](./README.md)** - Project overview
-
-## Troubleshooting
-
-### Skills not showing up
-
-Restart your AI tool or reload shell configuration.
-
-### Can't replace existing directory
-
-If you get `⚠️ directory exists` warnings:
-
-```bash
-# Backup existing skills
-mv ~/.claude/skills/polish ~/.claude/skills/polish.backup
-
-# Reinstall
-bun run install-local
-```
-
-### Changes not appearing
-
-Make sure you ran `bun run build` after editing source files.
 
 ## What's Next
 
