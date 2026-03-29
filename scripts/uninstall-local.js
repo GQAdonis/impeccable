@@ -94,6 +94,14 @@ function uninstallProvider(providerName, manifest) {
 
   console.log(`   Removed ${removedCount}/${impeccableSkills.length} skills`);
 
+  // Check for untracked symlinks
+  const actualSkills = fs.readdirSync(centralProviderDir);
+  const untrackedSymlinks = actualSkills.filter(s => !impeccableSkills.includes(s));
+  if (untrackedSymlinks.length > 0) {
+    console.warn(`   ⚠️  Found ${untrackedSymlinks.length} untracked symlinks (not removed):`);
+    untrackedSymlinks.forEach(s => console.warn(`      - ${s}`));
+  }
+
   // Remove provider-level symlink
   if (fs.existsSync(legacySkillsDir)) {
     const stats = fs.lstatSync(legacySkillsDir);
@@ -101,7 +109,9 @@ function uninstallProvider(providerName, manifest) {
     if (stats.isSymbolicLink()) {
       const target = fs.readlinkSync(legacySkillsDir);
 
-      if (target.includes('.TOOLS/skills')) {
+      const resolvedTarget = path.resolve(target);
+      const expectedTarget = path.resolve(path.join(HOME_DIR, '.TOOLS/skills', providerName));
+      if (resolvedTarget === expectedTarget) {
         try {
           fs.unlinkSync(legacySkillsDir);
           console.log(`   ✓ Removed ${legacySkillsDir}`);
@@ -120,6 +130,14 @@ function uninstallProvider(providerName, manifest) {
 
   // Remove from manifest
   removeProvider(manifest, providerName);
+
+  // Write manifest immediately after removing provider
+  try {
+    writeManifest(manifest);
+    console.log(`   ✓ Manifest updated for ${providerName}`);
+  } catch (error) {
+    console.error(`   ❌ Failed to update manifest: ${error.message}`);
+  }
 
   console.log();
   return true;
@@ -217,18 +235,10 @@ function uninstall() {
     uninstallProvider(provider, manifest);
   }
 
-  // Write updated manifest
-  try {
-    const remainingProviders = Object.keys(manifest.providers || {});
-
-    if (remainingProviders.length === 0) {
-      console.log('✓ All providers uninstalled\n');
-    } else {
-      writeManifest(manifest);
-      console.log(`✓ Manifest updated (${remainingProviders.length} providers remain)\n`);
-    }
-  } catch (error) {
-    console.error('⚠️  Failed to update manifest:', error.message);
+  // Check remaining providers
+  const remainingProviders = Object.keys(manifest.providers || {});
+  if (remainingProviders.length === 0) {
+    console.log('✓ All providers uninstalled\n');
   }
 
   // Cleanup empty directories
