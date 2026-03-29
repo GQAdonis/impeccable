@@ -19,6 +19,9 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
+// Placeholder import for manifest utilities
+import { readManifest, writeManifest, initManifest, addProviderToManifest } from './lib/manifest.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
@@ -114,6 +117,68 @@ function getSkillDirs(providerDir) {
 }
 
 /**
+ * Create centralized directory structure
+ */
+function createCentralizedDirs() {
+  const centralRoot = path.join(HOME_DIR, '.TOOLS/skills');
+
+  if (!fs.existsSync(centralRoot)) {
+    try {
+      fs.mkdirSync(centralRoot, { recursive: true });
+      console.log(`✓ Created ${centralRoot}\n`);
+    } catch (error) {
+      console.error(`❌ Failed to create ${centralRoot}: ${error.message}`);
+      console.error('   Check permissions: ls -la ~/.TOOLS/');
+      process.exit(1);
+    }
+  }
+}
+
+/**
+ * Create symlink with validation
+ * @param {string} target - Symlink target path
+ * @param {string} linkPath - Symlink location
+ * @param {string} skillName - Skill name for logging
+ * @returns {boolean} True if created or already valid
+ */
+function createSkillSymlink(target, linkPath, skillName) {
+  // Check if link already exists
+  if (fs.existsSync(linkPath)) {
+    const stats = fs.lstatSync(linkPath);
+
+    if (stats.isSymbolicLink()) {
+      const currentTarget = fs.readlinkSync(linkPath);
+      if (currentTarget === target) {
+        console.log(`   ⏭  ${skillName} already linked`);
+        return true;
+      } else {
+        console.warn(`   ⚠️  ${skillName} points to wrong location:`);
+        console.warn(`      Current: ${currentTarget}`);
+        console.warn(`      Expected: ${target}`);
+        fs.unlinkSync(linkPath);
+      }
+    } else if (stats.isDirectory()) {
+      console.error(`   ❌ ${linkPath} is a directory (not a symlink)`);
+      console.error(`      Move it first: mv "${linkPath}" "${linkPath}.backup"`);
+      return false;
+    } else {
+      console.error(`   ❌ ${linkPath} exists but is not a symlink or directory`);
+      return false;
+    }
+  }
+
+  // Create symlink
+  try {
+    fs.symlinkSync(target, linkPath);
+    console.log(`   ✓ Linked ${skillName}`);
+    return true;
+  } catch (error) {
+    console.error(`   ❌ Failed to create symlink: ${error.message}`);
+    return false;
+  }
+}
+
+/**
  * Install symlinks for a provider
  */
 function installProvider(providerName) {
@@ -200,6 +265,9 @@ function install() {
 
   // Build the project
   buildProject();
+
+  // Create centralized directories
+  createCentralizedDirs();
 
   // Install symlinks for each provider
   for (const provider of providers) {
