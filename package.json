@@ -29,7 +29,8 @@
     "screenshot": "bun run scripts/screenshot-antipatterns.js",
     "og-image": "bun run scripts/generate-og-image.js",
     "install-local": "bun run scripts/install-local.js",
-    "uninstall-local": "bun run scripts/uninstall-local.js"
+    "uninstall-local": "bun run scripts/uninstall-local.js",
+    "validate-local": "bun run scripts/validate-local.js"
   },
   "type": "module",
   "devDependencies": {
