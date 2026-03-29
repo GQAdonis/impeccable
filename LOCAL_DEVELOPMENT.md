@@ -17,15 +17,55 @@ bun run install-local -- --providers=claude,cursor
 The `install-local` script:
 
 1. **Builds the project** - Compiles source skills to all provider formats
-2. **Creates symlinks** - Links `~/.claude/skills/*` → `./impeccable/.claude/skills/*`
-3. **Enables live updates** - Changes in this repo are immediately available everywhere
+2. **Creates centralized directory** - Sets up `~/.TOOLS/skills/{provider}/` structure
+3. **Creates individual skill symlinks** - Links each skill: `~/.TOOLS/skills/claude/polish/` → `./impeccable/.claude/skills/polish/`
+4. **Migrates legacy directories** - Backs up and replaces `~/.claude/skills/` with symlink to centralized location
+5. **Enables live updates** - Changes in this repo are immediately available everywhere
+6. **Tracks installation** - Creates manifest at `~/.TOOLS/skills/.impeccable-manifest.json`
 
 ## Benefits
 
+✅ **Single source of truth** - All skills in `~/.TOOLS/skills/` across all providers
 ✅ **No manual copying** - Updates flow automatically to all tools
 ✅ **Test in real-time** - Edit skills and see changes immediately
 ✅ **Pull upstream updates** - `git pull` updates all tools instantly
-✅ **Multi-provider sync** - One source of truth for all AI tools
+✅ **Multi-provider sync** - One location for all AI tools
+✅ **Mixed sources** - Supports impeccable + third-party skills in same location
+✅ **Backwards compatible** - Tools still read from `~/.claude/skills/` via symlink
+
+## Architecture
+
+**Directory Structure:**
+```
+~/.TOOLS/
+└── skills/
+    ├── claude/                    # All Claude skills
+    │   ├── polish/               # → ./impeccable/.claude/skills/polish/
+    │   ├── audit/                # → ./impeccable/.claude/skills/audit/
+    │   └── my-custom-skill/      # → ~/other-project/skills/my-custom/
+    ├── cursor/                    # All Cursor skills
+    └── ...
+
+~/.claude/
+└── skills/                        # → ~/.TOOLS/skills/claude/
+
+./impeccable/
+├── source/skills/                 # Edit these
+├── .claude/skills/                # Build output
+└── ...
+```
+
+**Resolution Flow:**
+1. Claude Code reads `~/.claude/skills/polish/skill.md`
+2. Resolves: `~/.claude/skills/` → `~/.TOOLS/skills/claude/`
+3. Resolves: `~/.TOOLS/skills/claude/polish/` → `./impeccable/.claude/skills/polish/`
+4. Reads: `./impeccable/.claude/skills/polish/skill.md`
+
+**Key Properties:**
+- Two-level symlink indirection (transparent to tools)
+- Zero file duplication
+- Supports mixed skill sources
+- Build artifacts remain in project for inspection
 
 ## Workflow
 
@@ -48,19 +88,109 @@ bun run build
 # Pull latest from GitHub
 git pull origin main
 
-# Rebuild
+# Rebuild and refresh symlinks
 bun run build
-
-# All tools now have the latest skills!
+bun run install-local
 ```
 
-### Testing Locally
+## Validation
 
-Since symlinks point to this repo, you can:
+Check installation health:
 
-- Edit skills directly in `.claude/skills/` (they'll be overwritten on rebuild)
-- Test changes in any AI tool immediately
-- Iterate without reinstalling
+```bash
+# Validate all symlinks and build freshness
+bun run validate-local
+```
+
+**Example output:**
+
+```
+╔════════════════════════════════════════════════════╗
+║       Centralized Skills Installation Report      ║
+╚════════════════════════════════════════════════════╝
+
+📍 Provider-level symlinks:
+
+   ✓ Claude Code: ~/.TOOLS/skills/claude
+   ✓ Cursor: ~/.TOOLS/skills/cursor
+   ...
+
+📦 Skills by provider:
+
+   Claude Code: 21 skills
+      ✓ 21 valid
+   Cursor: 21 skills
+      ✓ 21 valid
+
+   Total: 210 skills
+   ✓ 210 valid
+
+✨ All systems nominal! Installation is valid.
+```
+
+**What it checks:**
+- Provider-level symlink integrity (`~/.claude/skills/` → `~/.TOOLS/skills/claude/`)
+- Individual skill symlink validity
+- Broken symlinks (target doesn't exist)
+- Stale builds (source newer than build)
+- Backup directory detection
+
+## Verification
+
+Check that symlinks were created:
+
+```bash
+# Validate installation (recommended)
+bun run validate-local
+
+# Manual checks
+ls -la ~/.claude/skills/              # Should be symlink
+readlink ~/.claude/skills             # Should show ~/.TOOLS/skills/claude
+
+ls -la ~/.TOOLS/skills/claude/        # Should show all skills
+readlink ~/.TOOLS/skills/claude/polish # Should show ./impeccable/.claude/skills/polish
+
+# List all skills across all providers
+ls -la ~/.TOOLS/skills/*/
+```
+
+## Troubleshooting
+
+### General Installation Issues
+
+**Problem:** Symlinks not created or broken
+**Solution:**
+- Verify you have `bun` installed
+- Run `bun run uninstall-local`
+- Run `bun run build`
+- Run `bun run install-local`
+
+### Installation validation fails
+
+**Problem:** `bun run validate-local` reports issues.
+
+**Solution:** Check the specific issues reported:
+
+- **Broken symlinks:** Run `bun run build && bun run install-local`
+- **Stale builds:** Run `bun run build`
+- **Wrong symlink targets:** Run `bun run uninstall-local && bun run install-local`
+- **Provider symlink missing:** Run `bun run install-local`
+
+### Custom skills not visible
+
+**Problem:** Added skills to `~/.TOOLS/skills/claude/` but they don't appear.
+
+**Solution:** Verify the directory structure:
+
+```bash
+ls -la ~/.TOOLS/skills/claude/my-skill/
+# Should contain skill.md
+
+readlink ~/.claude/skills
+# Should point to ~/.TOOLS/skills/claude
+
+# Restart AI tool or reload configuration
+```
 
 ## Supported Providers
 
@@ -77,32 +207,6 @@ The following providers are supported:
 - **trae** - Trae International (`.trae/`)
 - **trae-cn** - Trae China (`.trae-cn/`)
 
-## Installation Examples
-
-```bash
-# Install all providers (default)
-bun run install-local
-
-# Install only Claude Code
-bun run install-local -- --providers=claude
-
-# Install multiple specific providers
-bun run install-local -- --providers=claude,cursor,agents
-```
-
-## Verification
-
-Check that symlinks were created:
-
-```bash
-# List Claude skills
-ls -la ~/.claude/skills/
-
-# Verify a symlink points to this repo
-readlink ~/.claude/skills/polish
-# Should show: /Users/you/path/to/impeccable/.claude/skills/polish
-```
-
 ## Uninstallation
 
 To remove symlinks and restore normal installation:
@@ -116,42 +220,6 @@ bun run uninstall-local -- --providers=claude,cursor
 ```
 
 This removes only impeccable symlinks - it won't touch other skills in your global directories.
-
-## Troubleshooting
-
-### Symlinks don't appear
-
-**Problem:** After installation, skills don't show up in your AI tool.
-
-**Solution:** Restart the AI tool or reload your shell configuration.
-
-### Can't remove existing directory
-
-**Problem:** `⚠️ ~/.claude/skills/polish is a directory (not a symlink)`
-
-**Solution:** The script won't overwrite real directories. Move or backup manually first:
-
-```bash
-mv ~/.claude/skills/polish ~/.claude/skills/polish.backup
-bun run install-local
-```
-
-### Changes not appearing
-
-**Problem:** Edited skills don't show up in AI tools.
-
-**Solution:** Make sure you ran `bun run build` after editing source files. The build process compiles `source/` → provider directories.
-
-### Symlink points to wrong location
-
-**Problem:** Symlink exists but points to an old location.
-
-**Solution:** Uninstall and reinstall:
-
-```bash
-bun run uninstall-local
-bun run install-local
-```
 
 ## How It Works
 
