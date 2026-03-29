@@ -19,7 +19,12 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
-// Manifest utilities will be imported in a future task
+import {
+  readManifest,
+  writeManifest,
+  initManifest,
+  addProviderToManifest
+} from './manifest-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -274,50 +279,58 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
 /**
  * Install symlinks for a provider
  */
-function installProvider(providerName) {
+function installProvider(providerName, manifest) {
   const config = PROVIDERS[providerName];
   if (!config) {
     console.error(`❌ Unknown provider: ${providerName}`);
-    return;
+    return false;
   }
 
   console.log(`📦 Installing ${config.label} (${config.dir})...`);
 
   const localProviderDir = path.join(ROOT_DIR, config.dir);
-  const globalProviderDir = path.join(HOME_DIR, config.dir);
-  const globalSkillsDir = path.join(globalProviderDir, 'skills');
+  const centralProviderDir = path.join(HOME_DIR, '.TOOLS/skills', providerName);
 
   // Check if local provider directory exists
   if (!fs.existsSync(localProviderDir)) {
     console.warn(`⚠️  Local ${config.dir} directory not found, skipping`);
-    return;
+    return false;
   }
 
-  // Create global skills directory if it doesn't exist
-  if (!fs.existsSync(globalSkillsDir)) {
-    fs.mkdirSync(globalSkillsDir, { recursive: true });
-    console.log(`   Created ${globalSkillsDir}`);
+  // Create centralized provider directory
+  if (!fs.existsSync(centralProviderDir)) {
+    fs.mkdirSync(centralProviderDir, { recursive: true });
+    console.log(`   Created ${centralProviderDir}`);
   }
 
   // Get all skill directories
   const skills = getSkillDirs(localProviderDir);
   if (skills.length === 0) {
     console.warn(`⚠️  No skills found in ${localProviderDir}/skills`);
-    return;
+    return false;
   }
 
   // Create symlinks for each skill
   let successCount = 0;
   for (const skill of skills) {
     const target = path.join(localProviderDir, 'skills', skill);
-    const linkPath = path.join(globalSkillsDir, skill);
+    const linkPath = path.join(centralProviderDir, skill);
 
     if (createSkillSymlink(target, linkPath, skill)) {
       successCount++;
     }
   }
 
-  console.log(`   ✓ Installed ${successCount}/${skills.length} skills\n`);
+  console.log(`   ✓ Installed ${successCount}/${skills.length} skills`);
+
+  // Migrate legacy directory
+  const backupDir = migrateLegacyDirectory(providerName, config, centralProviderDir, skills);
+
+  // Add to manifest
+  addProviderToManifest(manifest, providerName, skills, backupDir);
+
+  console.log();
+  return true;
 }
 
 /**
@@ -325,23 +338,30 @@ function installProvider(providerName) {
  */
 function displaySummary(providers) {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('✨ Local installation complete!');
+  console.log('✨ Centralized installation complete!');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+  console.log('📦 Centralized location: ~/.TOOLS/skills/\n');
+
   console.log('Installed providers:');
   for (const provider of providers) {
     const config = PROVIDERS[provider];
     if (config) {
       console.log(`  • ${config.label} (${config.dir})`);
+      console.log(`    ~/.TOOLS/skills/${provider}/ ← impeccable skills`);
+      console.log(`    ${config.dir}/skills/ → ~/.TOOLS/skills/${provider}/`);
     }
   }
   console.log('\n📝 Next steps:');
-  console.log('  1. Any updates to this repo are now live everywhere');
-  console.log('  2. Run `bun run build` after making changes to source files');
-  console.log('  3. Run `git pull` to get upstream updates');
-  console.log('\n💡 Tips:');
-  console.log('  • To see linked skills: ls -l ~/.claude/skills/');
-  console.log('  • To uninstall: rm ~/.claude/skills/{skill-name}');
-  console.log('  • To reinstall: bun run scripts/install-local.js');
+  console.log('  1. Changes to this repo are now live everywhere');
+  console.log('  2. Run `bun run build` after modifying source files');
+  console.log('  3. Run `git pull && bun run build` for upstream updates');
+  console.log('  4. Add other skills: ln -s /path/to/skill ~/.TOOLS/skills/claude/');
+  console.log('\n💡 Useful commands:');
+  console.log('  • Validate installation: bun run validate-local');
+  console.log('  • List Claude skills: ls -la ~/.TOOLS/skills/claude/');
+  console.log('  • Check symlinks: readlink ~/.claude/skills');
+  console.log('  • Uninstall: bun run uninstall-local');
 }
 
 /**
@@ -359,12 +379,31 @@ function install() {
   // Build the project
   buildProject();
 
-  // Create centralized directories
+  // Create centralized root directory
   createCentralizedDirs();
+
+  // Read or initialize manifest
+  const packageJson = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+  let manifest = readManifest();
+
+  if (!manifest) {
+    manifest = initManifest(packageJson.version);
+    console.log('📝 Initializing installation manifest\n');
+  } else {
+    console.log('📝 Updating existing installation\n');
+  }
 
   // Install symlinks for each provider
   for (const provider of providers) {
-    installProvider(provider);
+    installProvider(provider, manifest);
+  }
+
+  // Write manifest
+  try {
+    writeManifest(manifest);
+    console.log('✓ Manifest updated\n');
+  } catch (error) {
+    console.error('⚠️  Failed to write manifest:', error.message);
   }
 
   // Display summary
