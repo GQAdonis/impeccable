@@ -5,7 +5,7 @@ export function initLensEffect() {
 	if (!container) return;
 
 	initSplitCompare(container, {
-		defaultPosition: 70
+		defaultPosition: 50
 	});
 }
 

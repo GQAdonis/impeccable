@@ -73,6 +73,7 @@ async function buildStaticSite() {
   const entrypoints = [
     path.join(ROOT_DIR, 'public', 'index.html'),
     path.join(ROOT_DIR, 'public', 'cheatsheet.html'),
+    path.join(ROOT_DIR, 'public', 'privacy.html'),
   ];
   const outdir = path.join(ROOT_DIR, 'build');
 

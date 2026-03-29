@@ -127,6 +127,16 @@ function renderDesktopLayout(container, commands) {
     }
 }
 
+function truncateDescription(text, maxLen = 120) {
+    if (text.length <= maxLen) return text;
+    // Cut at last sentence boundary within limit, or last word boundary
+    const truncated = text.slice(0, maxLen);
+    const lastPeriod = truncated.lastIndexOf('.');
+    if (lastPeriod > maxLen * 0.5) return truncated.slice(0, lastPeriod + 1);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return truncated.slice(0, lastSpace) + '...';
+}
+
 function renderManualEntry(cmd) {
     const relationship = commandRelationships[cmd.id];
     let relationshipHTML = '';
@@ -142,11 +152,12 @@ function renderManualEntry(cmd) {
     }
 
     const isBeta = betaCommands.includes(cmd.id);
+    const shortDesc = truncateDescription(cmd.description);
 
     return `
         <div class="manual-entry" data-id="${cmd.id}" id="cmd-${cmd.id}">
             <h3 class="manual-cmd-name">/${cmd.id}${isBeta ? ' <span class="beta-badge">BETA</span>' : ''}</h3>
-            <p class="manual-cmd-desc">${cmd.description}</p>
+            <p class="manual-cmd-desc">${shortDesc}</p>
             ${relationshipHTML}
         </div>
     `;
