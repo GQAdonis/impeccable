@@ -19,8 +19,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
-// Placeholder import for manifest utilities
-import { readManifest, writeManifest, initManifest, addProviderToManifest } from './lib/manifest.js';
+// Manifest utilities will be imported in a future task
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -74,31 +73,7 @@ function buildProject() {
   }
 }
 
-/**
- * Create or update symlink
- */
-function createSymlink(target, linkPath) {
-  // Remove existing symlink or directory
-  if (fs.existsSync(linkPath)) {
-    const stats = fs.lstatSync(linkPath);
-    if (stats.isSymbolicLink()) {
-      fs.unlinkSync(linkPath);
-    } else if (stats.isDirectory()) {
-      console.warn(`⚠️  ${linkPath} is a directory (not a symlink)`);
-      console.warn('   Move it first if you want to replace it with a symlink');
-      return false;
-    }
-  }
-
-  // Create symlink
-  try {
-    fs.symlinkSync(target, linkPath);
-    return true;
-  } catch (error) {
-    console.error(`❌ Failed to create symlink: ${error.message}`);
-    return false;
-  }
-}
+// createSymlink function removed in favor of createSkillSymlink
 
 /**
  * Get all skill directories from a provider config directory
@@ -142,13 +117,23 @@ function createCentralizedDirs() {
  * @returns {boolean} True if created or already valid
  */
 function createSkillSymlink(target, linkPath, skillName) {
+  // Validate target path exists
+  if (!fs.existsSync(target)) {
+    console.error(`   ❌ Source path does not exist: ${target}`);
+    return false;
+  }
+
   // Check if link already exists
   if (fs.existsSync(linkPath)) {
     const stats = fs.lstatSync(linkPath);
 
     if (stats.isSymbolicLink()) {
       const currentTarget = fs.readlinkSync(linkPath);
-      if (currentTarget === target) {
+      // Resolve both paths to absolute before comparing
+      const resolvedCurrentTarget = path.resolve(currentTarget);
+      const resolvedTarget = path.resolve(target);
+
+      if (resolvedCurrentTarget === resolvedTarget) {
         console.log(`   ⏭  ${skillName} already linked`);
         return true;
       } else {
@@ -169,7 +154,7 @@ function createSkillSymlink(target, linkPath, skillName) {
 
   // Create symlink
   try {
-    fs.symlinkSync(target, linkPath);
+    fs.symlinkSync(target, linkPath, 'dir'); // Specify type for Windows compatibility
     console.log(`   ✓ Linked ${skillName}`);
     return true;
   } catch (error) {
@@ -219,7 +204,7 @@ function installProvider(providerName) {
     const target = path.join(localProviderDir, 'skills', skill);
     const linkPath = path.join(globalSkillsDir, skill);
 
-    if (createSymlink(target, linkPath)) {
+    if (createSkillSymlink(target, linkPath, skill)) {
       successCount++;
     }
   }
