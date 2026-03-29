@@ -65,3 +65,19 @@ When adding a new user-invocable skill, update the command count in **all** of t
 - `AGENTS.md` → intro command count
 - `.claude-plugin/plugin.json` → description
 - `.claude-plugin/marketplace.json` → metadata description + plugin description
+
+## Centralized Skill Management
+
+The project uses a centralized skill management system where `~/.TOOLS/skills/` serves as the single source of truth for all AI tool skills.
+
+**Key commands:**
+- `bun run install-local` - Install skills globally with symlinks
+- `bun run uninstall-local` - Remove impeccable skills (preserves custom skills)
+- `bun run validate-local` - Check installation health
+
+**After making changes:**
+1. Edit files in `source/skills/`
+2. Run `bun run build`
+3. Changes immediately available in all AI tools
+
+See `LOCAL_DEVELOPMENT.md` for complete documentation.
