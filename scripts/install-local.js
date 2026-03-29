@@ -164,6 +164,95 @@ function createSkillSymlink(target, linkPath, skillName) {
 }
 
 /**
+ * Migrate legacy provider directory to centralized location
+ * @param {string} providerName - Provider name (e.g., 'claude')
+ * @param {Object} config - Provider configuration
+ * @param {string} centralProviderDir - Centralized provider directory path
+ * @param {Array<string>} impeccableSkills - List of impeccable skill names
+ * @returns {string|null} Backup directory path if created, null otherwise
+ */
+function migrateLegacyDirectory(providerName, config, centralProviderDir, impeccableSkills) {
+  const legacySkillsDir = path.join(HOME_DIR, config.dir, 'skills');
+
+  // Check if legacy directory exists
+  if (!fs.existsSync(legacySkillsDir)) {
+    // Doesn't exist - create symlink directly
+    try {
+      fs.symlinkSync(centralProviderDir, legacySkillsDir);
+      console.log(`   ✓ Created ${legacySkillsDir} → ${centralProviderDir}`);
+      return null;
+    } catch (error) {
+      console.error(`   ❌ Failed to create provider symlink: ${error.message}`);
+      return null;
+    }
+  }
+
+  const stats = fs.lstatSync(legacySkillsDir);
+
+  if (stats.isSymbolicLink()) {
+    // Already a symlink - verify target
+    const currentTarget = fs.readlinkSync(legacySkillsDir);
+
+    if (currentTarget === centralProviderDir) {
+      console.log(`   ✓ ${legacySkillsDir} already points to centralized location`);
+      return null;
+    } else {
+      console.log(`   ⚠️  ${legacySkillsDir} points to wrong location`);
+      console.log(`      Current: ${currentTarget}`);
+      console.log(`      Expected: ${centralProviderDir}`);
+      fs.unlinkSync(legacySkillsDir);
+      fs.symlinkSync(centralProviderDir, legacySkillsDir);
+      console.log(`   ✓ Updated symlink to centralized location`);
+      return null;
+    }
+  }
+
+  // Real directory exists - backup and migrate
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const backupDir = `${legacySkillsDir}.backup-${timestamp}`;
+
+  console.log(`   📦 Backing up existing skills to ${backupDir}`);
+
+  try {
+    fs.renameSync(legacySkillsDir, backupDir);
+  } catch (error) {
+    console.error(`   ❌ Failed to backup directory: ${error.message}`);
+    return null;
+  }
+
+  // Scan for non-impeccable skills
+  const backupSkills = fs.readdirSync(backupDir).filter(
+    s => fs.statSync(path.join(backupDir, s)).isDirectory()
+  );
+  const nonImpeccableSkills = backupSkills.filter(s => !impeccableSkills.includes(s));
+
+  if (nonImpeccableSkills.length > 0) {
+    console.log(`\n   ⚠️  Found ${nonImpeccableSkills.length} non-impeccable skills in backup:`);
+    for (const skill of nonImpeccableSkills) {
+      console.log(`      - ${skill}`);
+    }
+    console.log(`\n   To restore these to centralized location:`);
+    for (const skill of nonImpeccableSkills.slice(0, 3)) {
+      console.log(`      mv "${backupDir}/${skill}" "${centralProviderDir}/"`);
+    }
+    if (nonImpeccableSkills.length > 3) {
+      console.log(`      ... and ${nonImpeccableSkills.length - 3} more`);
+    }
+    console.log();
+  }
+
+  // Create provider-level symlink
+  try {
+    fs.symlinkSync(centralProviderDir, legacySkillsDir);
+    console.log(`   ✓ Created ${legacySkillsDir} → ${centralProviderDir}`);
+  } catch (error) {
+    console.error(`   ❌ Failed to create provider symlink: ${error.message}`);
+  }
+
+  return backupDir;
+}
+
+/**
  * Install symlinks for a provider
  */
 function installProvider(providerName) {
