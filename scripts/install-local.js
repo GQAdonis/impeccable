@@ -24,7 +24,7 @@ import {
   writeManifest,
   initManifest,
   addProviderToManifest
-} from './manifest-utils.js';
+} from './lib/manifest.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -383,7 +383,15 @@ function install() {
   createCentralizedDirs();
 
   // Read or initialize manifest
-  const packageJson = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+  let packageJson;
+  try {
+    packageJson = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+  } catch (error) {
+    console.error('❌ Failed to read package.json:', error.message);
+    console.error('Ensure package.json exists and is readable');
+    process.exit(1);
+  }
+
   let manifest = readManifest();
 
   if (!manifest) {
@@ -403,7 +411,13 @@ function install() {
     writeManifest(manifest);
     console.log('✓ Manifest updated\n');
   } catch (error) {
-    console.error('⚠️  Failed to write manifest:', error.message);
+    console.error('❌ Critical: Failed to write manifest:', error.message);
+    console.error('This could indicate a permissions issue or disk problem.');
+    console.error('Please check:');
+    console.error('1. Permissions for ~/.TOOLS/skills/ directory');
+    console.error('2. Available disk space');
+    console.error('3. Any file system errors');
+    process.exit(1);
   }
 
   // Display summary
