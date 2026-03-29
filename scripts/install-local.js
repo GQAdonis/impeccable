@@ -178,6 +178,8 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
   if (!fs.existsSync(legacySkillsDir)) {
     // Doesn't exist - create symlink directly
     try {
+      // Create parent directory if it doesn't exist
+      fs.mkdirSync(path.dirname(legacySkillsDir), { recursive: true });
       fs.symlinkSync(centralProviderDir, legacySkillsDir);
       console.log(`   ✓ Created ${legacySkillsDir} → ${centralProviderDir}`);
       return null;
@@ -192,17 +194,26 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
   if (stats.isSymbolicLink()) {
     // Already a symlink - verify target
     const currentTarget = fs.readlinkSync(legacySkillsDir);
+    const resolvedCurrentTarget = path.resolve(currentTarget);
+    const resolvedCentralProviderDir = path.resolve(centralProviderDir);
 
-    if (currentTarget === centralProviderDir) {
+    if (resolvedCurrentTarget === resolvedCentralProviderDir) {
       console.log(`   ✓ ${legacySkillsDir} already points to centralized location`);
       return null;
     } else {
       console.log(`   ⚠️  ${legacySkillsDir} points to wrong location`);
       console.log(`      Current: ${currentTarget}`);
       console.log(`      Expected: ${centralProviderDir}`);
-      fs.unlinkSync(legacySkillsDir);
-      fs.symlinkSync(centralProviderDir, legacySkillsDir);
-      console.log(`   ✓ Updated symlink to centralized location`);
+
+      try {
+        fs.unlinkSync(legacySkillsDir);
+        fs.symlinkSync(centralProviderDir, legacySkillsDir);
+        console.log(`   ✓ Updated symlink to centralized location`);
+      } catch (error) {
+        console.error(`   ❌ Failed to update symlink: ${error.message}`);
+        return null;
+      }
+
       return null;
     }
   }
@@ -217,6 +228,12 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
     fs.renameSync(legacySkillsDir, backupDir);
   } catch (error) {
     console.error(`   ❌ Failed to backup directory: ${error.message}`);
+    return null;
+  }
+
+  // Verify backup directory exists before proceeding
+  if (!fs.existsSync(backupDir)) {
+    console.error(`   ❌ Backup directory ${backupDir} does not exist`);
     return null;
   }
 
@@ -243,13 +260,15 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
 
   // Create provider-level symlink
   try {
+    // Create parent directory if it doesn't exist
+    fs.mkdirSync(path.dirname(legacySkillsDir), { recursive: true });
     fs.symlinkSync(centralProviderDir, legacySkillsDir);
     console.log(`   ✓ Created ${legacySkillsDir} → ${centralProviderDir}`);
+    return backupDir;
   } catch (error) {
     console.error(`   ❌ Failed to create provider symlink: ${error.message}`);
+    return null;
   }
-
-  return backupDir;
 }
 
 /**
