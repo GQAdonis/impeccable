@@ -35,14 +35,15 @@ export function readManifest() {
  * @param {Object} manifest - Manifest object to write
  */
 export function writeManifest(manifest) {
-  const dir = path.dirname(MANIFEST_PATH);
-
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  if (!manifest || typeof manifest !== 'object') {
+    throw new Error('Invalid manifest object');
   }
 
+  const dir = path.dirname(MANIFEST_PATH);
+
   try {
+    // recursive: true handles existing directories gracefully
+    fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf8');
   } catch (error) {
     console.error(`Failed to write manifest: ${error.message}`);
@@ -71,6 +72,9 @@ export function initManifest(version) {
  * @param {string|null} legacyBackup - Path to legacy backup if created
  */
 export function addProviderToManifest(manifest, provider, skills, legacyBackup = null) {
+  if (!manifest || !manifest.providers) {
+    throw new Error('Invalid manifest object');
+  }
   manifest.providers[provider] = {
     skills: skills,
     legacyBackup: legacyBackup
