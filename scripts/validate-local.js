@@ -126,9 +126,16 @@ function checkBackups() {
 
     for (const backupDir of backupDirs) {
       const backupPath = path.join(skillsDir, backupDir);
-      const skills = fs.readdirSync(backupPath).filter(
-        s => fs.statSync(path.join(backupPath, s)).isDirectory()
-      );
+      const skills = fs.readdirSync(backupPath).filter(s => {
+        try {
+          // Use lstatSync to check the symlink itself, not the target
+          const stats = fs.lstatSync(path.join(backupPath, s));
+          return stats.isDirectory() || stats.isSymbolicLink();
+        } catch (error) {
+          // Skip entries that can't be accessed (broken symlinks, permission issues)
+          return false;
+        }
+      });
 
       backups.push({
         provider: providerName,
