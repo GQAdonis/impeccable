@@ -26,7 +26,7 @@ function validateProvider(providerName) {
   const config = PROVIDERS[providerName];
   if (!config) return null;
 
-  const legacyDir = path.join(HOME_DIR, config.dir, 'skills');
+  const legacyDir = path.join(HOME_DIR, config.configDir, 'skills');
   const centralDir = path.join(HOME_DIR, '.TOOLS/skills', providerName);
 
   const result = {
@@ -117,7 +117,7 @@ function checkBackups() {
   const backups = [];
 
   for (const [providerName, config] of Object.entries(PROVIDERS)) {
-    const skillsDir = path.join(HOME_DIR, config.dir);
+    const skillsDir = path.join(HOME_DIR, config.configDir);
 
     if (!fs.existsSync(skillsDir)) continue;
 
