@@ -243,9 +243,16 @@ function migrateLegacyDirectory(providerName, config, centralProviderDir, impecc
   }
 
   // Scan for non-impeccable skills
-  const backupSkills = fs.readdirSync(backupDir).filter(
-    s => fs.statSync(path.join(backupDir, s)).isDirectory()
-  );
+  const backupSkills = fs.readdirSync(backupDir).filter(s => {
+    try {
+      // Use lstatSync to check the symlink itself, not the target
+      const stats = fs.lstatSync(path.join(backupDir, s));
+      return stats.isDirectory() || stats.isSymbolicLink();
+    } catch (error) {
+      // Skip entries that can't be accessed (broken symlinks, permission issues)
+      return false;
+    }
+  });
   const nonImpeccableSkills = backupSkills.filter(s => !impeccableSkills.includes(s));
 
   if (nonImpeccableSkills.length > 0) {
