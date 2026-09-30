@@ -1,0 +1,81 @@
+{
+  "target": "claude",
+  "verification": {
+    "level": "source-verified",
+    "source": "https://code.claude.com/docs/en/sub-agents",
+    "version": "documentation inspected 2026-09-24",
+    "live": "unverified"
+  },
+  "diagnostics": [
+    "Source-verified serialization only; installed native validation and live execution are unverified.",
+    "Only explicit model IDs are translated. Resolve tier, skill, capability and price policies with agent-team-models before native invocation.",
+    "These are native subagents; installing them does not create an experimental Claude agent team or enable that feature.",
+    "Role overrides are preserved without native schema certification. Skill IDs refer to separately installed skills; prompt mentions do not install or authorize them."
+  ],
+  "instructions": [
+    "Review staged artifacts before installation. Export grants no execution or registration authority.",
+    "Choose project .claude/agents or the staged local marketplace/plugin. Do not install both copies. Settings options are a proposed project .claude/settings.json."
+  ],
+  "files": [
+    {
+      "file": ".claude/agents/implementer.md",
+      "sha256": "33415632411967a2e047e4c6d8481fae7041c6f34c2b407fd93227a3b5bf92a2"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/implementer.md",
+      "sha256": "33415632411967a2e047e4c6d8481fae7041c6f34c2b407fd93227a3b5bf92a2"
+    },
+    {
+      "file": ".claude/agents/designer.md",
+      "sha256": "0ae51a34d66d96e5d6d6e897b9d8dc25eadd81453ca275b427c63c59bc9bd2d9"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/designer.md",
+      "sha256": "0ae51a34d66d96e5d6d6e897b9d8dc25eadd81453ca275b427c63c59bc9bd2d9"
+    },
+    {
+      "file": ".claude/agents/security-reviewer.md",
+      "sha256": "d3d52b682492fdb6c71acdd0a1f2fc194800173b1607803017d43b2299a0b412"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/security-reviewer.md",
+      "sha256": "d3d52b682492fdb6c71acdd0a1f2fc194800173b1607803017d43b2299a0b412"
+    },
+    {
+      "file": ".claude/agents/documentation-specialist.md",
+      "sha256": "ca6510698f5138bd42f628913f9beec4ed851334eeafdeb2947f5c82249a4e1e"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/documentation-specialist.md",
+      "sha256": "ca6510698f5138bd42f628913f9beec4ed851334eeafdeb2947f5c82249a4e1e"
+    },
+    {
+      "file": ".claude/agents/product-manager.md",
+      "sha256": "7c49b9f697549126024d2eca3c04a322548cee54574437cb98fbce20cc2c0ab8"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/product-manager.md",
+      "sha256": "7c49b9f697549126024d2eca3c04a322548cee54574437cb98fbce20cc2c0ab8"
+    },
+    {
+      "file": ".claude/agents/reviewer.md",
+      "sha256": "10a02868da0172bd01997f5936dc8f923dccae61caf63a52a500cf03c113e0e2"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/reviewer.md",
+      "sha256": "10a02868da0172bd01997f5936dc8f923dccae61caf63a52a500cf03c113e0e2"
+    },
+    {
+      "file": "plugins/impeccable-team/.claude-plugin/plugin.json",
+      "sha256": "f65793da6e4331872d07f2bd17c28dec405b9e1fac586da446f39326e3dd2dc0"
+    },
+    {
+      "file": ".claude-plugin/marketplace.json",
+      "sha256": "5f12594d1057e85d56170919fd2bb82fe069be8549b723e84925a7b044c24daf"
+    },
+    {
+      "file": "export-receipt.json",
+      "sha256": "6a7b46e9661483c13b3b1749a7c5fd20bb10d75d2b9a6ce6e00d727400162b1e"
+    }
+  ]
+}

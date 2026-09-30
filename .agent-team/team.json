@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "id": "impeccable-team",
+  "outcome": "Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs",
+  "scope": "project",
+  "harness": "codex",
+  "roles": [
+    {
+      "id": "implementer",
+      "description": "Deliver the requested outcome within assigned scope.",
+      "prompt": "Deliver: Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs. Coordinate ownership before editing. Report evidence and remaining work.",
+      "skills": [
+        "prometheus-ui-ux"
+      ],
+      "owns": [
+        "crates/**",
+        "scripts/**",
+        "cli/**",
+        "tests/**",
+        ".github/workflows/**",
+        "ENGINE_VERSION",
+        "plugin/**",
+        "package.json",
+        "Cargo.toml"
+      ],
+      "inputs": [
+        "Task and acceptance criteria"
+      ],
+      "outputs": [
+        "Rust detection engine changes with oracle coverage",
+        "Build/CLI/provider-transformer/release changes",
+        "Extension/plugin UI and authored skill-content changes",
+        "Security findings and remediations",
+        "README/AGENTS.md/community docs updates",
+        "Prioritized roadmap and scope decisions"
+      ],
+      "dependsOn": [],
+      "modelPolicy": {
+        "tier": "medium"
+      }
+    },
+    {
+      "id": "designer",
+      "description": "Decide layout, interaction and visual acceptance before implementation.",
+      "prompt": "Decide layout, interaction and visual acceptance before implementation. Outcome: Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs. Stay within assigned scope and return concrete evidence.",
+      "skills": [
+        "prometheus-ui-ux"
+      ],
+      "owns": [
+        "extension/**",
+        "vscode/**",
+        "cursor-plugin/**",
+        "ui/**",
+        "skill/**"
+      ],
+      "inputs": [
+        "Task context"
+      ],
+      "outputs": [
+        "Design specification and assets"
+      ],
+      "dependsOn": [],
+      "modelPolicy": {
+        "tier": "medium"
+      }
+    },
+    {
+      "id": "security-reviewer",
+      "description": "Review the actual trust boundaries and required controls.",
+      "prompt": "Review the actual trust boundaries and required controls. Outcome: Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs. Stay within assigned scope and return concrete evidence.",
+      "skills": [
+        "hybrid-mobile-architecture:agent-runtime-security"
+      ],
+      "owns": [
+        ".agent-team/findings/security/**"
+      ],
+      "inputs": [
+        "Task context"
+      ],
+      "outputs": [
+        "Threat model and evidence-backed findings"
+      ],
+      "dependsOn": [],
+      "modelPolicy": {
+        "tier": "hard"
+      }
+    },
+    {
+      "id": "documentation-specialist",
+      "description": "Keep operator and developer instructions consistent with the delivered behavior.",
+      "prompt": "Keep operator and developer instructions consistent with the delivered behavior. Outcome: Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs. Stay within assigned scope and return concrete evidence.",
+      "skills": [
+        "documentation-and-adrs"
+      ],
+      "owns": [
+        "README.md",
+        "README.npm.md",
+        "AGENTS.md",
+        "NOTICE.md",
+        "docs/**"
+      ],
+      "inputs": [
+        "Task context"
+      ],
+      "outputs": [
+        "Updated documentation"
+      ],
+      "dependsOn": [],
+      "modelPolicy": {
+        "tier": "medium"
+      }
+    },
+    {
+      "id": "product-manager",
+      "description": "Translate desired outcomes into priorities and acceptance criteria.",
+      "prompt": "Translate desired outcomes into priorities and acceptance criteria. Outcome: Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs. Stay within assigned scope and return concrete evidence.",
+      "skills": [
+        "domain-modeling"
+      ],
+      "owns": [
+        "DESIGN.md",
+        "PRODUCT.md",
+        ".agent-team/proposals/**"
+      ],
+      "inputs": [
+        "Task context"
+      ],
+      "outputs": [
+        "Prioritized requirements"
+      ],
+      "dependsOn": [],
+      "modelPolicy": {
+        "tier": "medium"
+      }
+    },
+    {
+      "id": "reviewer",
+      "description": "Independently verify acceptance criteria and code quality.",
+      "prompt": "Inspect the delivered diff and actual verification evidence at the completed phase boundary. Report concrete defects; do not rewrite implementation while reviewing.",
+      "skills": [
+        "code-review-and-quality",
+        "prometheus-ui-review"
+      ],
+      "owns": [
+        ".agent-team/findings/review/**"
+      ],
+      "inputs": [
+        "Implementation diff",
+        "Verification evidence"
+      ],
+      "outputs": [
+        "Review findings"
+      ],
+      "dependsOn": [
+        "implementer",
+        "designer",
+        "security-reviewer",
+        "documentation-specialist",
+        "product-manager"
+      ],
+      "modelPolicy": {
+        "tier": "hard"
+      }
+    }
+  ],
+  "modelPolicy": {
+    "tier": "medium"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "target": "codex",
+  "verification": {
+    "level": "source-verified",
+    "source": "https://learn.chatgpt.com/docs/agent-configuration/subagents",
+    "version": "documentation inspected 2026-09-24",
+    "live": "unverified"
+  },
+  "diagnostics": [
+    "Source-verified serialization only; installed native validation and live execution are unverified.",
+    "Only explicit model IDs are translated. Resolve tier, skill, capability and price policies with agent-team-models before native invocation.",
+    "Standalone agent files are supported. A Codex plugin agents manifest field is not verified; no such field is emitted.",
+    "Role overrides are preserved without native schema certification. Skill IDs refer to separately installed skills; prompt mentions do not install or authorize them."
+  ],
+  "instructions": [
+    "Review staged artifacts before installation. Export grants no execution or registration authority.",
+    "Review and merge .codex/agents and optional .codex/config.toml into the project; config values are native Codex options."
+  ],
+  "files": [
+    {
+      "file": ".codex/agents/implementer.toml",
+      "sha256": "12d9f4d3448b74205c99b73043c8fe3778f47cada92c0d6b2656f4951c48b1e3"
+    },
+    {
+      "file": ".codex/agents/designer.toml",
+      "sha256": "a8cd3bd212679e3d241aa6c0446e25f7f9cd657a47d3de4dfe1bc4a4cf8224b1"
+    },
+    {
+      "file": ".codex/agents/security-reviewer.toml",
+      "sha256": "cfe8405ee2b694adb869829d667c3b8352630eed34e9778f331dbf193a941dcd"
+    },
+    {
+      "file": ".codex/agents/documentation-specialist.toml",
+      "sha256": "0165a360191e55039fe7454abe91f844fbd05fa0c6147d74f97d6c7eb6f46fb4"
+    },
+    {
+      "file": ".codex/agents/product-manager.toml",
+      "sha256": "1ed5984d6540d1e61c07f543cc2b76c5e2ad2745635cd129f1295fc0d96c1383"
+    },
+    {
+      "file": ".codex/agents/reviewer.toml",
+      "sha256": "e2f59bbd0b273af13491885e0d56b1ec148b7a996d55d58a767e9493d31c1c6c"
+    },
+    {
+      "file": "export-receipt.json",
+      "sha256": "fa3d430e2344f301f5a645ba2eebb82be61e103a6db966218afc08de6c04cf5e"
+    }
+  ]
+}

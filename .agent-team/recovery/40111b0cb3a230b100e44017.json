@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "file": ".opencode/agents/implementer.md",
+      "before": null,
+      "afterSha256": "4099c1e9cb19d57cb4f1db0bc1446313db6057046dbfd468bbabbca804aba55d"
+    },
+    {
+      "file": ".opencode/agents/designer.md",
+      "before": null,
+      "afterSha256": "d9853017ff48f3eeeb3f8161c898e048e1f00331ac5da3e6e6626c29a28978b6"
+    },
+    {
+      "file": ".opencode/agents/security-reviewer.md",
+      "before": null,
+      "afterSha256": "c31122dd6d1742868a449eb14071d34ff99cadd58f172350f9a1a56cff815ae1"
+    },
+    {
+      "file": ".opencode/agents/documentation-specialist.md",
+      "before": null,
+      "afterSha256": "ae6c5d335373cab23a7b7a624761f06339da16f15fba0afa3e80cc7035994f8c"
+    },
+    {
+      "file": ".opencode/agents/product-manager.md",
+      "before": null,
+      "afterSha256": "4b66490ed2bd5103bae32f59fb648ff66926da5a729027f93de2c255efd03eb3"
+    },
+    {
+      "file": ".opencode/agents/reviewer.md",
+      "before": null,
+      "afterSha256": "aacf0c57363460d0f09b55bcf6507c75ffbd0d95790a0d7e6480fba118df3882"
+    },
+    {
+      "file": ".agent-team/project-routing.json",
+      "before": "{\n  \"schemaVersion\": 1,\n  \"activeTeam\": \"impeccable-team\",\n  \"manifest\": \".agent-team/impeccable-team/team.json\",\n  \"target\": \"minimax\",\n  \"nativeDefinitions\": [],\n  \"instructionFiles\": [\n    \"AGENTS.md\",\n    \"CLAUDE.md\"\n  ],\n  \"delegation\": \"sequential-only\",\n  \"limitations\": [\n    \"Native definition presence is not live invocation evidence. The active harness owns permissions, models, concurrency and delegation.\",\n    \"When delegation is unavailable, use selected role instructions sequentially and report it; builder-context review is not independent.\",\n    \"Zed external ACP agents use their native configuration; Zed parallel threads are not an automatic delegation API.\"\n  ]\n}\n",
+      "afterSha256": "1c589d4fd88ebaafb3dc9f5a0c72bdff9ea120c6e3c61e115c527a8db4e22580"
+    }
+  ]
+}

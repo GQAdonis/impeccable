@@ -1,0 +1,10 @@
+{
+  "version": "2",
+  "plugins": [
+    {
+      "id": "impeccable-team",
+      "displayName": "impeccable-team",
+      "source": "./plugins/impeccable-team"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "target": "kimi",
+  "verification": {
+    "level": "source-verified",
+    "source": "https://github.com/MoonshotAI/kimi-code/blob/main/docs/en/customization/agents.md",
+    "version": "main documentation inspected 2026-09-24",
+    "live": "unverified"
+  },
+  "diagnostics": [
+    "Source-verified serialization only; installed native validation and live execution are unverified.",
+    "Only explicit model IDs are translated. Resolve tier, skill, capability and price policies with agent-team-models before native invocation.",
+    "Role overrides are preserved without native schema certification. Skill IDs refer to separately installed skills; prompt mentions do not install or authorize them."
+  ],
+  "instructions": [
+    "Review staged artifacts before installation. Export grants no execution or registration authority.",
+    "Choose project .kimi-code/agents or the staged Kimi v2 marketplace/plugin. Literal ${base_prompt} in supplied prompts remains unchanged."
+  ],
+  "files": [
+    {
+      "file": ".kimi-code/agents/implementer.md",
+      "sha256": "45465ff7336e1a2a206be1fd3bcd394f0ce30d0eb041a623e346269bd14d1251"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/implementer.md",
+      "sha256": "45465ff7336e1a2a206be1fd3bcd394f0ce30d0eb041a623e346269bd14d1251"
+    },
+    {
+      "file": ".kimi-code/agents/designer.md",
+      "sha256": "dd29074f95f1bfa466bc8d9c2c2a838be29554f595b18d8af9f10cf5c595ff6d"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/designer.md",
+      "sha256": "dd29074f95f1bfa466bc8d9c2c2a838be29554f595b18d8af9f10cf5c595ff6d"
+    },
+    {
+      "file": ".kimi-code/agents/security-reviewer.md",
+      "sha256": "70041b44e9274b020fc518dce75c50b8264cc7fcc63f8e200c0e1354ddd4c0da"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/security-reviewer.md",
+      "sha256": "70041b44e9274b020fc518dce75c50b8264cc7fcc63f8e200c0e1354ddd4c0da"
+    },
+    {
+      "file": ".kimi-code/agents/documentation-specialist.md",
+      "sha256": "759210cc4936590152a4f6ccce7897b79195e5881590ae489d41b1513ff965ff"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/documentation-specialist.md",
+      "sha256": "759210cc4936590152a4f6ccce7897b79195e5881590ae489d41b1513ff965ff"
+    },
+    {
+      "file": ".kimi-code/agents/product-manager.md",
+      "sha256": "69e4c831ce69ab901b6b11beb672bd61bee245cfb0521392c97b28918d3a2e10"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/product-manager.md",
+      "sha256": "69e4c831ce69ab901b6b11beb672bd61bee245cfb0521392c97b28918d3a2e10"
+    },
+    {
+      "file": ".kimi-code/agents/reviewer.md",
+      "sha256": "cc93c5d5f7040f7e2d15f2b5e6f187e2f69e33a039dec80af081b648aaf4616b"
+    },
+    {
+      "file": "plugins/impeccable-team/agents/reviewer.md",
+      "sha256": "cc93c5d5f7040f7e2d15f2b5e6f187e2f69e33a039dec80af081b648aaf4616b"
+    },
+    {
+      "file": "plugins/impeccable-team/kimi.plugin.json",
+      "sha256": "ebd986fe07ab039e78aaca7799aa1b8162d9e7bdd1b8b16a13c6a68a5811f734"
+    },
+    {
+      "file": "marketplace.json",
+      "sha256": "85e41c34624c8b8c0f773d94aadaed0363a08b99fba59811a11709f5fa9f9cd7"
+    },
+    {
+      "file": "export-receipt.json",
+      "sha256": "5ae9161cf047dc1d242e7c43a08704bc7fc0aaac049c5a94632b4da49c8ace3a"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "file": ".minimax/agents/implementer/agent.md",
+      "before": null,
+      "afterSha256": "33415632411967a2e047e4c6d8481fae7041c6f34c2b407fd93227a3b5bf92a2"
+    },
+    {
+      "file": ".minimax/agents/designer/agent.md",
+      "before": null,
+      "afterSha256": "0ae51a34d66d96e5d6d6e897b9d8dc25eadd81453ca275b427c63c59bc9bd2d9"
+    },
+    {
+      "file": ".minimax/agents/security-reviewer/agent.md",
+      "before": null,
+      "afterSha256": "b1833255fd35a0de89cd5ddb218598a706f353c610fd1aac52667824c3dd25e4"
+    },
+    {
+      "file": ".minimax/agents/documentation-specialist/agent.md",
+      "before": null,
+      "afterSha256": "ca6510698f5138bd42f628913f9beec4ed851334eeafdeb2947f5c82249a4e1e"
+    },
+    {
+      "file": ".minimax/agents/product-manager/agent.md",
+      "before": null,
+      "afterSha256": "7c49b9f697549126024d2eca3c04a322548cee54574437cb98fbce20cc2c0ab8"
+    },
+    {
+      "file": ".minimax/agents/reviewer/agent.md",
+      "before": null,
+      "afterSha256": "5deacb93a44b1454eecd4a6c8c3580a8bee149c21f68a08e0087f256d2dcedd1"
+    },
+    {
+      "file": ".agent-team/project-routing.json",
+      "before": "{\n  \"schemaVersion\": 1,\n  \"activeTeam\": \"impeccable-team\",\n  \"manifest\": \".agent-team/impeccable-team/team.json\",\n  \"target\": \"opencode\",\n  \"nativeDefinitions\": [\n    \".opencode/agents/implementer.md\",\n    \".opencode/agents/designer.md\",\n    \".opencode/agents/security-reviewer.md\",\n    \".opencode/agents/documentation-specialist.md\",\n    \".opencode/agents/product-manager.md\",\n    \".opencode/agents/reviewer.md\"\n  ],\n  \"instructionFiles\": [\n    \"AGENTS.md\",\n    \"CLAUDE.md\"\n  ],\n  \"delegation\": \"native-definitions\",\n  \"limitations\": [\n    \"Native definition presence is not live invocation evidence. The active harness owns permissions, models, concurrency and delegation.\",\n    \"When delegation is unavailable, use selected role instructions sequentially and report it; builder-context review is not independent.\",\n    \"Zed external ACP agents use their native configuration; Zed parallel threads are not an automatic delegation API.\"\n  ]\n}\n",
+      "afterSha256": "c8644233a31153dd911266eae70f2b19aba26469ad0883b2d804235ab3c06b13"
+    }
+  ]
+}

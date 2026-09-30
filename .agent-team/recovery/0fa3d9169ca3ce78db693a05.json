@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "file": ".claude/agents/implementer.md",
+      "before": null,
+      "afterSha256": "33415632411967a2e047e4c6d8481fae7041c6f34c2b407fd93227a3b5bf92a2"
+    },
+    {
+      "file": ".claude/agents/designer.md",
+      "before": null,
+      "afterSha256": "0ae51a34d66d96e5d6d6e897b9d8dc25eadd81453ca275b427c63c59bc9bd2d9"
+    },
+    {
+      "file": ".claude/agents/security-reviewer.md",
+      "before": null,
+      "afterSha256": "d3d52b682492fdb6c71acdd0a1f2fc194800173b1607803017d43b2299a0b412"
+    },
+    {
+      "file": ".claude/agents/documentation-specialist.md",
+      "before": null,
+      "afterSha256": "ca6510698f5138bd42f628913f9beec4ed851334eeafdeb2947f5c82249a4e1e"
+    },
+    {
+      "file": ".claude/agents/product-manager.md",
+      "before": null,
+      "afterSha256": "7c49b9f697549126024d2eca3c04a322548cee54574437cb98fbce20cc2c0ab8"
+    },
+    {
+      "file": ".claude/agents/reviewer.md",
+      "before": null,
+      "afterSha256": "10a02868da0172bd01997f5936dc8f923dccae61caf63a52a500cf03c113e0e2"
+    },
+    {
+      "file": ".agent-team/project-routing.json",
+      "before": "{\n  \"schemaVersion\": 1,\n  \"activeTeam\": \"impeccable-team\",\n  \"manifest\": \".agent-team/impeccable-team/team.json\",\n  \"target\": \"codex\",\n  \"nativeDefinitions\": [\n    \".codex/agents/implementer.toml\",\n    \".codex/agents/designer.toml\",\n    \".codex/agents/security-reviewer.toml\",\n    \".codex/agents/documentation-specialist.toml\",\n    \".codex/agents/product-manager.toml\",\n    \".codex/agents/reviewer.toml\"\n  ],\n  \"instructionFiles\": [\n    \"AGENTS.md\",\n    \"CLAUDE.md\"\n  ],\n  \"delegation\": \"native-definitions\",\n  \"limitations\": [\n    \"Native definition presence is not live invocation evidence. The active harness owns permissions, models, concurrency and delegation.\",\n    \"When delegation is unavailable, use selected role instructions sequentially and report it; builder-context review is not independent.\",\n    \"Zed external ACP agents use their native configuration; Zed parallel threads are not an automatic delegation API.\"\n  ]\n}\n",
+      "afterSha256": "aa238e00a617d8456b1fcacc468e45cb2e5f334dccb2daaafd558d8631b75356"
+    }
+  ]
+}

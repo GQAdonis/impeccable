@@ -1,0 +1,8 @@
+{
+  "name": "impeccable-team",
+  "version": "1.0.0",
+  "description": "Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs",
+  "agents": [
+    "./agents"
+  ]
+}

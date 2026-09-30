@@ -1,0 +1,57 @@
+{
+  "operation": "create",
+  "id": "impeccable-team",
+  "outcome": "Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs",
+  "complexity": "complex",
+  "areas": ["code", "design", "security", "docs", "product"],
+  "deliverables": [
+    "Rust detection engine changes with oracle coverage",
+    "Build/CLI/provider-transformer/release changes",
+    "Extension/plugin UI and authored skill-content changes",
+    "Security findings and remediations",
+    "README/AGENTS.md/community docs updates",
+    "Prioritized roadmap and scope decisions"
+  ],
+  "budget": "balanced",
+  "review": true,
+  "harness": "codex",
+  "scope": "project",
+  "ownership": {
+    "implementer": [
+      "crates/**",
+      "scripts/**",
+      "cli/**",
+      "tests/**",
+      ".github/workflows/**",
+      "ENGINE_VERSION",
+      "plugin/**",
+      "package.json",
+      "Cargo.toml"
+    ],
+    "designer": [
+      "extension/**",
+      "vscode/**",
+      "cursor-plugin/**",
+      "ui/**",
+      "skill/**"
+    ],
+    "security-reviewer": [
+      ".agent-team/findings/security/**"
+    ],
+    "documentation-specialist": [
+      "README.md",
+      "README.npm.md",
+      "AGENTS.md",
+      "NOTICE.md",
+      "docs/**"
+    ],
+    "product-manager": [
+      "DESIGN.md",
+      "PRODUCT.md",
+      ".agent-team/proposals/**"
+    ],
+    "reviewer": [
+      ".agent-team/findings/review/**"
+    ]
+  }
+}

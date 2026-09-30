@@ -1,0 +1,13 @@
+{
+  "name": "impeccable-team-marketplace",
+  "owner": {
+    "name": "impeccable-team"
+  },
+  "plugins": [
+    {
+      "name": "impeccable-team",
+      "source": "./plugins/impeccable-team",
+      "description": "Maintain and evolve Impeccable across its Rust detection engine, Node/Bun build and CLI, browser/VS Code/Cursor extension surfaces, authored design-skill content, tests, security posture, release automation, and community-facing docs"
+    }
+  ]
+}

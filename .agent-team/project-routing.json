@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "activeTeam": "impeccable-team",
+  "manifest": ".agent-team/impeccable-team/team.json",
+  "target": "minimax",
+  "nativeDefinitions": [
+    ".minimax/agents/implementer/agent.md",
+    ".minimax/agents/designer/agent.md",
+    ".minimax/agents/security-reviewer/agent.md",
+    ".minimax/agents/documentation-specialist/agent.md",
+    ".minimax/agents/product-manager/agent.md",
+    ".minimax/agents/reviewer/agent.md"
+  ],
+  "instructionFiles": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "delegation": "native-definitions",
+  "limitations": [
+    "Native definition presence is not live invocation evidence. The active harness owns permissions, models, concurrency and delegation.",
+    "When delegation is unavailable, use selected role instructions sequentially and report it; builder-context review is not independent.",
+    "Zed external ACP agents use their native configuration; Zed parallel threads are not an automatic delegation API."
+  ]
+}
